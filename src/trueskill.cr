@@ -1,0 +1,5 @@
+require "./gauss"
+require "./trueskill/factors/*"
+require "./trueskill/layers/*"
+require "./trueskill/schedules/*"
+require "./trueskill/*"

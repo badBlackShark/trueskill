@@ -3,6 +3,8 @@ trueskill
 
 trueskill is a rating-system for games with an arbitrary number of teams and players developed by Microsoft Research. It is based on the Glicko rating system and solves some major flaws of the ELO system.
 
+This is a translation from [saulab's Ruby implementation](https://github.com/saulabs/trueskill) to Crystal.
+
 Usage
 -----
 

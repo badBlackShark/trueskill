@@ -1,0 +1,9 @@
+name: trueskill
+version: 0.1.0
+
+authors:
+  - badBlackShark <Timdaniel.Engelhardt@web.de>
+
+crystal: 0.34.0
+
+license: MIT
