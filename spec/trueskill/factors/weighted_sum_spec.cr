@@ -15,24 +15,24 @@ describe TrueSkill::Factors::Prior do
   describe "weights" do
     it "should setup the weights correctly" do
       factor = setup_factor
-      factor.weights[0][0].should be_close(tolerance, 0.5)
-      factor.weights[1][0].should be_close(tolerance, -1.4)
-      factor.weights[2][0].should be_close(tolerance, -0.7142)
-      factor.weights[2][1].should be_close(tolerance, -1.14285)
-      factor.weights[3][0].should be_close(tolerance, -0.625)
-      factor.weights[3][2].should be_close(tolerance, 1.25)
+      factor.weights[0][0].should be_close(0.5, tolerance)
+      factor.weights[1][0].should be_close(-1.4, tolerance)
+      factor.weights[2][0].should be_close(-0.7142, tolerance)
+      factor.weights[2][1].should be_close(-1.14285, tolerance)
+      factor.weights[3][0].should be_close(-0.625, tolerance)
+      factor.weights[3][2].should be_close(1.25, tolerance)
     end
   end
 
   describe "weights_squared" do
     it "should setup the squared weights correctly" do
       factor = setup_factor
-      factor.weights_squared[0][0].should be_close(tolerance, 0.25)
-      factor.weights_squared[1][0].should be_close(tolerance, 1.96)
-      factor.weights_squared[2][0].should be_close(tolerance, 0.51)
-      factor.weights_squared[2][1].should be_close(tolerance, 1.3061)
-      factor.weights_squared[3][0].should be_close(tolerance, 0.3906)
-      factor.weights_squared[3][2].should be_close(tolerance, 1.5625)
+      factor.weights_squared[0][0].should be_close(0.25, tolerance)
+      factor.weights_squared[1][0].should be_close(1.96, tolerance)
+      factor.weights_squared[2][0].should be_close(0.51, tolerance)
+      factor.weights_squared[2][1].should be_close(1.3061, tolerance)
+      factor.weights_squared[3][0].should be_close(0.3906, tolerance)
+      factor.weights_squared[3][2].should be_close(1.5625, tolerance)
     end
   end
 
@@ -51,7 +51,7 @@ describe TrueSkill::Factors::Prior do
   describe "#update_message_at" do
     it "should return a difference of 4.50116 for message 0" do
       factor = setup_factor
-      factor.update_message_at(0).should be_close(tolerance, 4.50116)
+      factor.update_message_at(0).should be_close(4.50116, tolerance)
     end
   end
 end

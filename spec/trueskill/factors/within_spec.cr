@@ -10,14 +10,14 @@ describe TrueSkill::Factors::Within do
   describe "#update_message_at" do
     it "should return a difference of 173.2048" do
       factor = setup_factor
-      factor.update_message_at(0).should be_close(tolerance, 173.2048)
+      factor.update_message_at(0).should be_close(173.2048, tolerance)
     end
   end
 
   describe "#log_normalization" do
     it "should be -5.339497" do
       factor = setup_factor
-      factor.log_normalization.should be_close(tolerance, -5.339497)
+      factor.log_normalization.should be_close(-5.339497, tolerance)
     end
   end
 end

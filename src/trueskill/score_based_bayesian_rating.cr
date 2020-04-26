@@ -1,22 +1,24 @@
 module TrueSkill
   class ScoreBasedBayesianRating
     # @return [Array<Array<TrueSkill::Rating>>]
-    getter teams
+    getter teams : Array(Array(TrueSkill::Rating))
 
     # @return [Float]
-    getter beta
+    getter beta : Float64
 
     # @return [Float]
-    getter beta_squared
+    getter beta_squared : Float64
 
     # @return [Float]
-    getter gamma
+    getter gamma : Float64
 
     # @return [Float]
-    getter gamma_squared
+    getter gamma_squared : Float64
 
     # @return [Boolean]
-    getter skills_additive
+    getter skills_additive : Bool
+
+    @scores : Array(Float64)
 
     # Creates a new skill estimate for given scores and team configuration based on the given game parameters
     # Works for the special case: two teams
@@ -62,16 +64,15 @@ module TrueSkill
       @scores = score_teams_hash.values
       raise "teams.size should be 2: this implementation of the score based bayesian rating only works for two teams" unless @teams.size == 2
 
-      opts = {
-        :beta            => 25/6.0,
-        :skills_additive => true,
-      }.merge(options)
-      @beta = opts[:beta]
+      b = options[:beta]
+      @beta = b.is_a?(Float64) ? b : 25/6.0
       @beta_squared = @beta**2
 
-      @skills_additive = opts[:skills_additive]
+      s_a = options[:skills_additive]
+      @skills_additive = s_a.is_a?(Bool) ? s_a : true
 
-      @gamma = options[:gamma] || 0.1
+      g = options[:gamma]
+      @gamma = g.is_a?(Float64) ? g : 0.1
       @gamma_squared = @gamma * @gamma
 
       @teams = teams
@@ -88,10 +89,10 @@ module TrueSkill
       n_team_2 = @skills_additive ? 1 : @teams[1].size.to_f
 
       n_all = @teams[0].size.to_f + @teams[1].size.to_f
-      var_team_1 = @teams[0].inject(0) { |sum, item| sum + item.variance }
-      var_team_2 = @teams[1].inject(0) { |sum, item| sum + item.variance }
-      mean_team_1 = @teams[0].inject(0) { |sum, item| sum + item.mean }
-      mean_team_2 = @teams[1].inject(0) { |sum, item| sum + item.mean }
+      var_team_1 = @teams[0].reduce(0) { |sum, item| sum + item.variance }
+      var_team_2 = @teams[1].reduce(0) { |sum, item| sum + item.variance }
+      mean_team_1 = @teams[0].reduce(0) { |sum, item| sum + item.mean }
+      mean_team_2 = @teams[1].reduce(0) { |sum, item| sum + item.mean }
 
       @teams[0].map! { |rating|
         precision = 1.0 / rating.variance + 1.0/(n_all * @beta_squared + 2.0 * @gamma_squared + var_team_2 / n_team_2 + var_team_1 / n_team_1 - rating.variance / n_team_1)

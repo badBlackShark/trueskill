@@ -10,7 +10,7 @@ describe TrueSkill::Factors::Prior do
   describe "#update_message_at" do
     it "should return a difference of 73.33333" do
       factor = setup_factor
-      factor.update_message_at(0).should be_close(tolerance, 73.33333)
+      factor.update_message_at(0).should be_close(73.33333, tolerance)
     end
   end
 

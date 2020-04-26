@@ -1,7 +1,7 @@
 module TrueSkill
   module Layers
     class TeamDifferenceComparision < Base
-      @ranks : Array(Int32)
+      @ranks : Array(Int32) | Array(Float64)
       @epsilon : Float64
 
       def initialize(graph, ranks)

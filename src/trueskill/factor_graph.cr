@@ -3,7 +3,7 @@ module TrueSkill
     # @return [Array<Array<TrueSkill::Rating>>]
     getter teams : Array(Array(TrueSkill::Rating))
 
-    getter ranks : Array(Int32)
+    getter ranks : Array(Int32) | Array(Float64)
 
     # @return [Float]
     getter beta : Float64
@@ -21,8 +21,6 @@ module TrueSkill
 
     # @return [Boolean]
     getter skills_additive : Bool
-
-    @prior_layer : Layers::PriorToSkills
 
     # Creates a new trueskill factor graph for calculating the new skills based on the given game parameters
     #
@@ -63,34 +61,40 @@ module TrueSkill
     #  # update the Ratings
     #  graph.update_skills
     #
-    def initialize(ranks_teams_hash : Hash(Array(TrueSkill::Rating), Int32), options = Hash(Symbol, Float64 | Bool).new)
+    def initialize(ranks_teams_hash : Hash(Array(TrueSkill::Rating), Int32 | Float64), options = Hash(Symbol, Float64 | Bool).new)
       @teams = ranks_teams_hash.keys
       @ranks = ranks_teams_hash.values
       @layers = Array(TrueSkill::Layers::Base).new
 
-      b = opts[:beta]?
+      b = options[:beta]?
       @beta = b.is_a?(Float64) ? b : 25/6.0
       @beta_squared = @beta**2
 
-      d_p = opts[:draw_probability]?
+      d_p = options[:draw_probability]?
       @draw_probability = d_p.is_a?(Float64) ? d_p : 0.1
 
-      s_a = opts[:skills_additive]?
+      s_a = options[:skills_additive]?
       @skills_additive = s_a.is_a?(Bool) ? s_a : true
 
-      @epsilon = 0 #-Math.sqrt(2.0 * @beta_squared) * Gauss::Distribution.inv_cdf((1.0 - @draw_probability) / 2.0)
+      @epsilon = -Math.sqrt(2.0 * @beta_squared) * Gauss::Distribution.inv_cdf((1.0 - @draw_probability) / 2.0)
 
-      @prior_layer = Layers::PriorToSkills.new(self, Array(Array(TrueSkill::Rating)).new)
+      # We unfortunately can't declare this ivar beforehand, since that causes a very weird bug.
+      # This leads us to having to use .not_nil! every time we use it, since we know that it'll be
+      # initialized, but Crystal doesn't.
+      # If we do declare it, i.e. put @prior_layer : Layers::PriorToSkills with all the getters,
+      # Crystal complains that @prior_layer was not initialized directly. I have not found any other
+      # way to fix this, other than to not declare it, and thus allow it to be nil.
+      @prior_layer = Layers::PriorToSkills.new(self, @teams)
 
-      # @layers = [
-      #   @prior_layer,
-      #   Layers::SkillsToPerformances.new(self).not_nil!,
-      #   Layers::PerformancesToTeamPerformances.new(self, @skills_additive).not_nil!,
-      #   Layers::IteratedTeamPerformances.new(self,
-      #     Layers::TeamPerformanceDifferences.new(self),
-      #     Layers::TeamDifferenceComparision.new(self, @ranks)
-      #   )
-      # ]
+      @layers = [
+        @prior_layer.not_nil!,
+        Layers::SkillsToPerformances.new(self),
+        Layers::PerformancesToTeamPerformances.new(self, @skills_additive),
+        Layers::IteratedTeamPerformances.new(self,
+          Layers::TeamPerformanceDifferences.new(self),
+          Layers::TeamDifferenceComparision.new(self, @ranks)
+        )
+      ]
     end
 
     def draw_margin
@@ -106,7 +110,7 @@ module TrueSkill
       run_schedule
       @teams.each_with_index do |team, i|
         team.each_with_index do |player, j|
-          player.replace(@prior_layer.output[i][j])
+          player.replace(@prior_layer.not_nil!.output[i][j])
         end
       end
       ranking_probability
@@ -127,7 +131,7 @@ module TrueSkill
     end
 
     private def updated_skills
-      @prior_layer.output
+      @prior_layer.not_nil!.output
     end
 
     private def build_layers
@@ -141,7 +145,7 @@ module TrueSkill
 
     private def run_schedule
       schedules = @layers.map &.prior_schedule + @layers.reverse.map &.posterior_schedule
-      Schedules::Sequence.new(schedules.compact.as(Array(Schedules::Base))).visit
+      Schedules::Sequence.new(schedules.compact.map { |s| s.as(Schedules::Base) }).visit
     end
   end
 end

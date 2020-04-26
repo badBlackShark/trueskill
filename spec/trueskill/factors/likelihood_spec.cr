@@ -11,13 +11,13 @@ describe TrueSkill::Factors::Likelihood do
   describe "#update_message_at" do
     it "should return a difference of 0.0" do
       factor = setup_factor
-      factor.update_message_at(0).should be_close(tolerance, 0.0)
+      factor.update_message_at(0).should be_close(0.0, tolerance)
     end
 
     it "should return a difference of 0.833066 for the second message" do
       factor = setup_factor
       factor.update_message_at(0)
-      factor.update_message_at(1).should be_close(tolerance, 0.833066)
+      factor.update_message_at(1).should be_close(0.833066, tolerance)
     end
   end
 
