@@ -1,7 +1,6 @@
 module TrueSkill
   module Layers
     class IteratedTeamPerformances < Base
-
       @tpd : TrueSkill::Layers::Base
       @tdc : TrueSkill::Layers::Base
 

@@ -1,18 +1,21 @@
 module TrueSkill
   module Layers
     class PerformancesToTeamPerformances < Base
+
       def initialize(graph, skills_additive = true)
         @skills_additive = skills_additive
-        super graph
+        super(graph)
+        @output = Array(Array(Gauss::Distribution)).new
       end
 
       def build
         @input.each do |ratings|
+          raise "Illegal type" unless ratings.is_a?(Array(TrueSkill::Rating))
           variable = Gauss::Distribution.new
           activities = ratings.map &.activity
           activities.map! { |a| a / ratings.size.to_f } unless @skills_additive
           @factors << Factors::WeightedSum.new(variable, ratings, activities)
-          @output << [TrueSkill::Rating.new(0.0, 0.0)]
+          @output << [variable]
         end
       end
 

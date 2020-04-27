@@ -12,21 +12,21 @@ module TrueSkill
         @index_order = [(0..weights.size + 1).to_a]
         (1..weights.size).each do |idx|
           dest_idx = 0
-          @weights[idx] = Array(Float64).new
-          @weights_squared[idx] = Array(Float64).new
+          @weights << Array(Float64).new
+          @weights_squared << Array(Float64).new
           @index_order << [idx]
           (0..ratings.size - 1).each do |src_idx|
             next if src_idx == idx - 1
             weight = weights[idx - 1] == 0 ? 0.0 : -weights[src_idx] / weights[idx - 1]
-            @weights[idx][dest_idx] = weight
-            @weights_squared[idx][dest_idx] = weight**2
-            @index_order.last[dest_idx + 1] = src_idx + 1
+            @weights[idx] << weight
+            @weights_squared[idx] << weight**2
+            @index_order.last << src_idx + 1
             dest_idx += 1
           end
           final_weight = weights[idx - 1] == 0 ? 0.0 : 1.0 / weights[idx - 1]
-          @weights[idx][dest_idx] = final_weight
-          @weights_squared[idx][dest_idx] = final_weight**2
-          @index_order.last[weights.size] = 0
+          @weights[idx] << final_weight
+          @weights_squared[idx] << final_weight**2
+          @index_order.last << 0
         end
         bind(variable)
         ratings.each { |v| bind(v) }

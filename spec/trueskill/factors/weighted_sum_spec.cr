@@ -2,13 +2,13 @@ require "../../spec_helper"
 
 private def setup_factor
   variable = Gauss::Distribution.with_variance(0.0, 0.0)
-    variables = [
-      Gauss::Distribution.new(22, 1.6),
-      Gauss::Distribution.new(26, 2.5),
-      Gauss::Distribution.new(31, 3.6),
-    ]
+  variables = [
+    Gauss::Distribution.new(22, 1.6),
+    Gauss::Distribution.new(26, 2.5),
+    Gauss::Distribution.new(31, 3.6)
+  ]
 
-    TrueSkill::Factors::WeightedSum.new(variable, variables, [0.5, 0.7, 0.8])
+  TrueSkill::Factors::WeightedSum.new(variable, variables, [0.5, 0.7, 0.8])
 end
 
 describe TrueSkill::Factors::Prior do

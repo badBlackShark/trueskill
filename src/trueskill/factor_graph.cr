@@ -107,10 +107,14 @@ module TrueSkill
     def update_skills
       # puts " vorher = #{@layers.map(&:input).inspect}}"
       build_layers
+      # p layers
+      # p "next"
       run_schedule
       @teams.each_with_index do |team, i|
         team.each_with_index do |player, j|
           player.replace(@prior_layer.not_nil!.output[i][j])
+          # p @prior_layer.not_nil!.output[i][j]
+          # p "next"
         end
       end
       ranking_probability
@@ -140,12 +144,16 @@ module TrueSkill
         layer.input = output
         layer.build
         output = layer.output
+        # p output.map { |e| e.class }
+        # p "next"
       end
     end
 
     private def run_schedule
       schedules = @layers.map &.prior_schedule + @layers.reverse.map &.posterior_schedule
       Schedules::Sequence.new(schedules.compact.map { |s| s.as(Schedules::Base) }).visit
+      # p schedules
+      # p "next"
     end
   end
 end

@@ -95,7 +95,7 @@ module Gauss
     end
 
     def value_at(x)
-      exp = -(x - @mean)**2.0 / (2.0 * @variance)
+      exp = -((x - @mean)**2.0 / (2.0 * @variance))
       (1.0/@deviation) * @@inv_sqrt_2pi * Math.exp(exp)
     end
 

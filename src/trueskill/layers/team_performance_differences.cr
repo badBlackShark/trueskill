@@ -1,10 +1,6 @@
 module TrueSkill
   module Layers
     class TeamPerformanceDifferences < Base
-      def initialize(graph)
-        super(graph)
-      end
-
       def build
         (0..@input.size - 2).each do |i|
           variable = Gauss::Distribution.new

@@ -23,9 +23,9 @@ describe TrueSkill::Layers::PriorToSkills do
 
     it "should add 3 output variables" do
       layer = layer_setup
-      size_before = layer.factors.size
+      size_before = layer.output.size
       layer.build
-      layer.factors.size.should eq size_before + 3
+      layer.output.size.should eq size_before + 3
     end
   end
 

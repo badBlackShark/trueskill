@@ -5,6 +5,7 @@ module TrueSkill
         @input.each do |team|
           team_performances = Array(TrueSkill::Rating).new
           team.each do |rating|
+            raise "Illegal type" unless rating.is_a?(TrueSkill::Rating)
             variable = TrueSkill::Rating.new(0.0, 0.0, rating.activity, rating.tau)
             @factors << Factors::Likelihood.new(@graph.beta_squared, variable, rating)
             team_performances << variable

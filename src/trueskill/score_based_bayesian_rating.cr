@@ -64,14 +64,14 @@ module TrueSkill
       @scores = score_teams_hash.values
       raise "teams.size should be 2: this implementation of the score based bayesian rating only works for two teams" unless @teams.size == 2
 
-      b = options[:beta]
+      b = options[:beta]?
       @beta = b.is_a?(Float64) ? b : 25/6.0
       @beta_squared = @beta**2
 
-      s_a = options[:skills_additive]
+      s_a = options[:skills_additive]?
       @skills_additive = s_a.is_a?(Bool) ? s_a : true
 
-      g = options[:gamma]
+      g = options[:gamma]?
       @gamma = g.is_a?(Float64) ? g : 0.1
       @gamma_squared = @gamma * @gamma
 

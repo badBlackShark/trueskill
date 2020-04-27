@@ -3,8 +3,8 @@ module TrueSkill
     abstract class Base
       property graph : TrueSkill::FactorGraph
       property factors : Array(TrueSkill::Factors::Base)
-      property output : Array(Array(TrueSkill::Rating))
-      property input : Array(Array(TrueSkill::Rating))
+      property output : Array(Array(TrueSkill::Rating)) | Array(Array(Gauss::Distribution))
+      property input : Array(Array(TrueSkill::Rating)) | Array(Array(Gauss::Distribution))
 
       def initialize(graph)
         @graph = graph
